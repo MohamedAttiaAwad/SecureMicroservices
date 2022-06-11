@@ -21,14 +21,14 @@ namespace IdentityServer
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddControllersWithViews();
+
             services.AddIdentityServer()
                 .AddInMemoryClients(Config.Clients)
                 .AddInMemoryApiScopes(Config.ApiScopes)
-
                 //.AddInMemoryApiResources(Config.ApiResources)
                 //.AddTestUsers(Config.TestUser())
                 .AddDeveloperSigningCredential();
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -38,16 +38,14 @@ namespace IdentityServer
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            app.UseStaticFiles();
             app.UseRouting();
             app.UseIdentityServer();
-
+            app.UseAuthorization();
+            //app.UseAuthentication();
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGet("/", async context =>
-                {
-                    await context.Response.WriteAsync("hello world");
-                });
+                endpoints.MapDefaultControllerRoute();
             });
         }
     }
